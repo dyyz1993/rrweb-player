@@ -23,8 +23,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@tsconfig/svelte": "^1.0.0",
-    "rrweb": "^0.9.14"
+    "@tsconfig/svelte": "^1.0.0"
   },
   "scripts": {
     "build": "rollup -c",

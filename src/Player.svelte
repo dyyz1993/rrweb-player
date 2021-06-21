@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { Replayer, unpack, mirror } from 'rrweb';
-  import type { eventWithTime, playerConfig } from 'rrweb/typings/types';
+  import type { eventWithTime, networkData } from 'rrweb/typings/types';
   import {
     inlineCss,
     openFullscreen,
@@ -11,6 +11,7 @@
     typeOf,
   } from './utils';
   import Controller from './Controller.svelte';
+  import Network from './Network.svelte';
 
   export let width: number = 1024;
   export let height: number = 576;
@@ -21,7 +22,7 @@
   export let speed: number = 1;
   export let showController: boolean = true;
   export let tags: Record<string, string> = {};
-
+  
   export const getMirror = () => mirror;
 
   const controllerHeight = 80;
@@ -47,6 +48,11 @@
     width: `${width}px`,
     height: `${height + (showController ? controllerHeight : 0)}px`,
   });
+
+  let networkList = [];
+  let networkMap = new Map<string,networkData>();
+
+  let num = 0;
 
   const updateScale = (
     el: HTMLElement,
@@ -114,6 +120,9 @@
   };
 
   onMount(() => {
+
+    // setInterval(()=>{num++},1000)
+
     // runtime type check
     if (speedOption !== undefined && typeOf(speedOption) !== 'array') {
       throw new Error('speedOption must be array');
@@ -136,6 +145,14 @@
     }
 
     replayer = new Replayer(events, {
+      
+      networkConfig:(data)=>{
+        // console.log(data)
+        // networkList.push(data);
+        num++ 
+        networkMap.set(data.id,data)
+        // console.log(networkMap)
+      },
       speed,
       root: frame,
       unpackFn: unpack,
@@ -217,5 +234,9 @@
       {skipInactive}
       {tags}
       on:fullscreen={() => toggleFullscreen()} />
+      <Network
+        data={networkMap}
+        a={num}
+      ></Network>
   {/if}
 </div>
