@@ -1,7 +1,7 @@
 <script lang="ts">
   import { EventType } from 'rrweb';
   import type { Replayer } from 'rrweb';
-  import type { playerMetaData } from 'rrweb/typings/types';
+  import type { networkData, playerMetaData } from 'rrweb/typings/types';
   import type {
     PlayerMachineState,
     SpeedMachineState,
@@ -24,6 +24,7 @@
   export let speedOption: number[];
   export let speed = speedOption.length ? speedOption[0] : 1;
   export let tags: Record<string, string> = {};
+  export let gotoCallback:any;
 
   let currentTime = 0;
   $: {
@@ -142,6 +143,7 @@
   };
 
   export const goto = (timeOffset: number) => {
+    gotoCallback && gotoCallback();
     currentTime = timeOffset;
     const isPlaying = playerState === 'playing';
     replayer.pause();
@@ -149,6 +151,8 @@
     if (!isPlaying) {
       replayer.pause();
     }
+    
+
   };
 
   const handleProgressClick = (event: MouseEvent) => {

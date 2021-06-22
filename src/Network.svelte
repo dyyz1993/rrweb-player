@@ -1,16 +1,33 @@
 <script lang="ts">
 import type { networkData } from "rrweb/typings/types";
-import { beforeUpdate, onMount } from "svelte";
+import { beforeUpdate, onMount, tick } from "svelte";
 
-  export let data: Map<string,networkData>
-  export let a :any;
+  // export let data: Map<string,networkData>
+  // export let a :any;
+  export let arr :any[];
 
+  $:map = arr.reduce((m,item)=>{ m.set(item.id,item); return m },new Map())
 
-  let c : Map<string,networkData>;
-  beforeUpdate(()=>{
-    c = data;
-    console.log([...c.entries()])
+  // let c : Map<string,networkData>;
+  // let len = 0 ;
+  beforeUpdate(async ()=>{
+    // arr.forEach(element => {
+    //   map.set(element.id,element)
+    // });
+    // map = map;
+    // console.log(data)
+    // c = data;
+    // await tick();
+    // console.log(num2)
+    
+    // len = arr.length;
+    // console.log([...c.entries()])
   })
+
+  // $:map = 
+
+  
+  console.log(arr);
   
 </script>
 
@@ -20,6 +37,10 @@ import { beforeUpdate, onMount } from "svelte";
 </style>
 
 <div>
+  {arr.length}
+  <!-- {num2} -->
+  <!-- {a} -->
+  <!-- {len} -->
     <table>
         <thead>
           <td>method</td>
@@ -32,7 +53,7 @@ import { beforeUpdate, onMount } from "svelte";
             <td>time</td>
         </thead>
         <tbody>
-          {#each [...c.entries()] as [id,item]}
+          {#each [...map.entries()] as [id,item]}
           <tr>
             <td>{item.method}</td>
             <td>{item.url}</td>

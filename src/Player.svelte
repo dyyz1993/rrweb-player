@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy,setContext, getContext } from 'svelte';
+  import { writable } from 'svelte/store';
   import { Replayer, unpack, mirror } from 'rrweb';
   import type { eventWithTime, networkData } from 'rrweb/typings/types';
   import {
@@ -49,10 +50,14 @@
     height: `${height + (showController ? controllerHeight : 0)}px`,
   });
 
-  let networkList = [];
-  let networkMap = new Map<string,networkData>();
+  $: networkArr= [];
 
-  let num = 0;
+  let gotoCallback = ()=>{
+    networkArr = [];
+  }
+
+
+  // $: networkMap = new Map<string,networkData>();
 
   const updateScale = (
     el: HTMLElement,
@@ -147,10 +152,16 @@
     replayer = new Replayer(events, {
       
       networkConfig:(data)=>{
+        
         // console.log(data)
         // networkList.push(data);
-        num++ 
-        networkMap.set(data.id,data)
+        // networkArr.push(data);
+        // num++ 
+        networkArr = networkArr.concat(data);
+        
+        // networkMap.set(data.id,data)
+        
+        // console.log(data);
         // console.log(networkMap)
       },
       speed,
@@ -233,10 +244,10 @@
       {speedOption}
       {skipInactive}
       {tags}
+      {gotoCallback}
       on:fullscreen={() => toggleFullscreen()} />
       <Network
-        data={networkMap}
-        a={num}
+        arr={networkArr}
       ></Network>
   {/if}
 </div>
